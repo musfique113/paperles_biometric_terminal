@@ -17,6 +17,7 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.OvershootInterpolator
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -62,11 +63,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var flSensorContainer: FrameLayout
     private lateinit var ivFingerprintIcon: ImageView
     private lateinit var vSensorRingOuter: View
-    private lateinit var btnThemeToggle: MaterialButton
-    private lateinit var btnSettings: MaterialButton
+    private lateinit var btnThemeToggle: ImageButton
+    private lateinit var btnSettings: ImageButton
     private lateinit var btnQuickPunch: MaterialButton
 
-    private var pinBuffer = "101"
+    private var pinBuffer = "20250001"
     private var logEventCount = 0
     private var sensorBreathingAnim: ObjectAnimator? = null
     private var sensorRadarAnim: ObjectAnimator? = null
@@ -105,7 +106,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         bindViews()
-        btnThemeToggle.setIconResource(if (isDarkMode) R.drawable.ic_light_mode else R.drawable.ic_theme_mode)
+        btnThemeToggle.setImageResource(if (isDarkMode) R.drawable.ic_light_mode else R.drawable.ic_theme_mode)
         setupNumpad()
         setupSensorAnimations()
         setupClickListeners()
@@ -154,8 +155,8 @@ class MainActivity : AppCompatActivity() {
         btnSettings = findViewById(R.id.btnSettings)
         btnQuickPunch = findViewById(R.id.btnQuickPunch)
 
-        // Cache & restore last used PIN
-        pinBuffer = prefs.getString("last_pin", "101") ?: "101"
+        // Cache & restore last used Employee ID / PIN
+        pinBuffer = prefs.getString("last_pin", "20250001") ?: "20250001"
         tvPinDisplay.text = pinBuffer
     }
 
@@ -215,8 +216,8 @@ class MainActivity : AppCompatActivity() {
             btn.setOnClickListener {
                 it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
                 animateButtonPress(it)
-                // Cap PIN length to 8 digits
-                if (pinBuffer.length < 8) {
+                // Cap Employee ID / PIN length to 10 digits
+                if (pinBuffer.length < 10) {
                     pinBuffer += digit
                     updatePinDisplay()
                 }
@@ -328,10 +329,10 @@ class MainActivity : AppCompatActivity() {
             animateButtonPress(it)
             it.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
             if (pinBuffer.isBlank()) {
-                showStatusFeedback("Enter employee PIN first", isError = true)
+                showStatusFeedback("Enter Employee ID / PIN first", isError = true)
                 return@setOnClickListener
             }
-            executePunch(rawStatus = 0, label = "PIN KEYPAD PUNCH")
+            executePunch(rawStatus = 0, label = "EMP ID KEYPAD PUNCH")
         }
 
         btnThemeToggle.setOnClickListener {
@@ -465,7 +466,7 @@ class MainActivity : AppCompatActivity() {
     private fun executePunch(rawStatus: Int, label: String) {
         val serverBase = prefs.getString("server_url", "http://127.0.0.1:3001") ?: "http://127.0.0.1:3001"
         val deviceSn = prefs.getString("device_sn", "ZK-ANDROID-001") ?: "ZK-ANDROID-001"
-        val pin = if (pinBuffer.isNotBlank()) pinBuffer else "101"
+        val pin = if (pinBuffer.isNotBlank()) pinBuffer else "20250001"
         prefs.edit().putString("last_pin", pin).apply()
         val timeStamp = punchDateFormat.format(Date())
 
@@ -473,7 +474,7 @@ class MainActivity : AppCompatActivity() {
         val attLogPayload = "$pin\t$timeStamp\t$rawStatus\t1\t0\t0\n"
         val endpoint = "$serverBase/iclock/cdata?SN=$deviceSn&table=ATTLOG"
 
-        appendLog(">>> [$label] PIN: $pin | Timestamp: $timeStamp")
+        appendLog(">>> [$label] ID: $pin | Timestamp: $timeStamp")
         appendLog(">>> POST $endpoint")
         showStatusFeedback("Transmitting punch to server...")
 
@@ -489,7 +490,7 @@ class MainActivity : AppCompatActivity() {
                     val code = response.code
                     runOnUiThread {
                         if (code == 200) {
-                            showStatusFeedback("\u2713 Attendance recorded: PIN $pin")
+                            showStatusFeedback("\u2713 Attendance recorded: ID $pin")
                             appendLog("<<< [HTTP 200 OK] Server Response: $body")
                             animateSensorSuccess()
                         } else {
