@@ -1,6 +1,58 @@
-# Project exclude paths
-/.gradle/
-/.kotlin/
-/app/
-/build/
-/gradle/
+# Built application files
+*.apk
+*.ap_
+*.aab
+
+# Files for the ART/Dalvik VM
+*.dex
+
+# Java class files
+*.class
+
+# Generated files
+bin/
+gen/
+out/
+
+# Gradle files
+.gradle/
+build/
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Android Studio
+*.iml
+.idea/caches/
+.idea/libraries/
+.idea/modules.xml
+.idea/workspace.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+.idea/deploymentTargetSelector.xml
+.idea/appInsightsSettings.xml
+
+# Keystore files
+# (Uncomment if you don't want to check in your keystore)
+# *.jks
+# *.keystore
+
+# External native build folder generated in Android Studio 2.2 and later
+.cxx/
+
+# Google Services (Uncomment if using Firebase and don't want to check in credentials)
+# google-services.json
+
+# Kotlin
+.kotlin/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Captures (Android Studio profiling)
+captures/
+
+# IntelliJ IDEA
+*.swp
+*~

@@ -1,0 +1,20 @@
+<resources>
+    <style name="Theme.PaperlesTerminal" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">#16A34A</item>
+        <item name="colorPrimaryContainer">#DCFCE7</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorOnPrimaryContainer">#14532D</item>
+        <item name="colorSecondary">#0EA5E9</item>
+        <item name="colorSecondaryContainer">#E0F2FE</item>
+        <item name="colorError">#DC2626</item>
+        <item name="colorSurface">#FAFAFA</item>
+        <item name="colorOnSurface">#0F172A</item>
+        <item name="colorSurfaceContainer">#F1F5F9</item>
+        <item name="colorSurfaceContainerHigh">#E2E8F0</item>
+        <item name="colorOutline">#94A3B8</item>
+        <item name="colorOutlineVariant">#E2E8F0</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+</resources>
