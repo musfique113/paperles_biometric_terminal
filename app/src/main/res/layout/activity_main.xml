@@ -576,13 +576,12 @@
                     android:background="?attr/colorOutlineVariant" />
 
                 <!-- Scrollable Console View (180dp height, isolated scroll) -->
-                <androidx.core.widget.NestedScrollView
+                <ScrollView
                     android:id="@+id/nsvLogConsole"
                     android:layout_width="match_parent"
                     android:layout_height="180dp"
                     android:fillViewport="true"
                     android:scrollbars="vertical"
-                    android:nestedScrollingEnabled="false"
                     android:overScrollMode="never">
 
                     <TextView
@@ -596,7 +595,7 @@
                         android:padding="12dp"
                         android:textIsSelectable="true"
                         android:text="Initializing protocol session..." />
-                </androidx.core.widget.NestedScrollView>
+                </ScrollView>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>

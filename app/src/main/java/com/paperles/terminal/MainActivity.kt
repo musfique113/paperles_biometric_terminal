@@ -25,7 +25,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
-import androidx.core.widget.NestedScrollView
+import android.widget.ScrollView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.color.MaterialColors
@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvLogConsole: TextView
     private lateinit var tvConsoleEndpoint: TextView
     private lateinit var tvLogCount: TextView
-    private lateinit var nsvLogConsole: NestedScrollView
+    private lateinit var nsvLogConsole: ScrollView
     private lateinit var btnLogClear: MaterialButton
     private lateinit var flSensorContainer: FrameLayout
     private lateinit var ivFingerprintIcon: ImageView
