@@ -246,17 +246,32 @@
                 android:textStyle="bold"
                 android:layout_marginEnd="10dp" />
 
-            <TextView
-                android:id="@+id/tvPinDisplay"
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="20250001"
-                android:textColor="?attr/colorOnSurface"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:fontFamily="monospace"
-                android:letterSpacing="0.1" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/tvPinDisplay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="20250001"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:fontFamily="monospace"
+                    android:letterSpacing="0.1" />
+
+                <!-- Dynamic Blinking Terminal Typing Cursor -->
+                <View
+                    android:id="@+id/vPinCursor"
+                    android:layout_width="2.5dp"
+                    android:layout_height="22dp"
+                    android:layout_marginStart="3dp"
+                    android:background="?attr/colorPrimary" />
+            </LinearLayout>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnQuickPunch"
@@ -560,13 +575,14 @@
                     android:layout_height="1dp"
                     android:background="?attr/colorOutlineVariant" />
 
-                <!-- Scrollable Console View (180dp height) -->
+                <!-- Scrollable Console View (180dp height, isolated scroll) -->
                 <androidx.core.widget.NestedScrollView
                     android:id="@+id/nsvLogConsole"
                     android:layout_width="match_parent"
                     android:layout_height="180dp"
                     android:fillViewport="true"
                     android:scrollbars="vertical"
+                    android:nestedScrollingEnabled="false"
                     android:overScrollMode="never">
 
                     <TextView

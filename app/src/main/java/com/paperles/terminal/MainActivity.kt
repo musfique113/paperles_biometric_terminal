@@ -63,6 +63,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var flSensorContainer: FrameLayout
     private lateinit var ivFingerprintIcon: ImageView
     private lateinit var vSensorRingOuter: View
+    private lateinit var vPinCursor: View
     private lateinit var btnThemeToggle: ImageButton
     private lateinit var btnSettings: ImageButton
     private lateinit var btnQuickPunch: MaterialButton
@@ -71,6 +72,7 @@ class MainActivity : AppCompatActivity() {
     private var logEventCount = 0
     private var sensorBreathingAnim: ObjectAnimator? = null
     private var sensorRadarAnim: ObjectAnimator? = null
+    private var cursorBlinkAnim: ObjectAnimator? = null
 
     // 12-hour format with AM/PM (e.g. 02:30:15 PM)
     private val timeFormat = SimpleDateFormat("hh:mm:ss a", Locale.US)
@@ -109,6 +111,7 @@ class MainActivity : AppCompatActivity() {
         btnThemeToggle.setImageResource(if (isDarkMode) R.drawable.ic_light_mode else R.drawable.ic_theme_mode)
         setupNumpad()
         setupSensorAnimations()
+        setupCursorAnimation()
         setupClickListeners()
         updateDeviceInfoHeader()
         updateEndpointDisplay()
@@ -123,6 +126,7 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
         sensorBreathingAnim?.cancel()
         sensorRadarAnim?.cancel()
+        cursorBlinkAnim?.cancel()
         handler.removeCallbacks(clockRunnable)
         handler.removeCallbacks(heartbeatRunnable)
     }
@@ -143,6 +147,7 @@ class MainActivity : AppCompatActivity() {
         tvHeartbeatStatus = findViewById(R.id.tvHeartbeatStatus)
         tvStatusFeedback = findViewById(R.id.tvStatusFeedback)
         tvPinDisplay = findViewById(R.id.tvPinDisplay)
+        vPinCursor = findViewById(R.id.vPinCursor)
         tvLogConsole = findViewById(R.id.tvLogConsole)
         tvConsoleEndpoint = findViewById(R.id.tvConsoleEndpoint)
         tvLogCount = findViewById(R.id.tvLogCount)
@@ -304,7 +309,30 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupCursorAnimation() {
+        // Continuous blinking terminal cursor in the Employee ID / PIN field
+        cursorBlinkAnim = ObjectAnimator.ofFloat(vPinCursor, View.ALPHA, 1.0f, 0.0f).apply {
+            duration = 450
+            repeatCount = ValueAnimator.INFINITE
+            repeatMode = ValueAnimator.REVERSE
+            start()
+        }
+    }
+
     private fun setupClickListeners() {
+        // Disallow parent screen ScrollView from intercepting touch gestures inside log console
+        nsvLogConsole.setOnTouchListener { v, event ->
+            when (event.action and MotionEvent.ACTION_MASK) {
+                MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
+                    v.parent.requestDisallowInterceptTouchEvent(true)
+                }
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    v.parent.requestDisallowInterceptTouchEvent(false)
+                }
+            }
+            false
+        }
+
         flSensorContainer.setOnClickListener {
             // Animate fingerprint icon with crisp spring bounce on touch
             ivFingerprintIcon.animate()
@@ -623,9 +651,12 @@ class MainActivity : AppCompatActivity() {
         val lines = if (current.isEmpty()) entry else (current + "\n" + entry).split("\n").takeLast(60).joinToString("\n")
         tvLogConsole.text = lines
 
-        // Auto-scroll seamlessly to bottom on new log entries
+        // Scroll strictly inside log console without requesting focus or moving outer screen
         nsvLogConsole.post {
-            nsvLogConsole.fullScroll(View.FOCUS_DOWN)
+            val maxScroll = tvLogConsole.bottom - nsvLogConsole.height
+            if (maxScroll > 0) {
+                nsvLogConsole.scrollTo(0, maxScroll)
+            }
         }
 
         tvLogConsole.animate()
